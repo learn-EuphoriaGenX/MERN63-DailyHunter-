@@ -1,35 +1,64 @@
-import Button from "../components/Button"
-import Card from "../components/Card"
+import Button from "../components/Button";
+import Card from "../components/Card";
 
-let data = [
-    {
-        title: "Noteworthy technology acquisitions 2021",
-        description: "This is a wider card with supporting text below as a natural lead-in to additional content.",
-        buttonText: "View More",
-    },
-    {
-        title: "New multi-million dollar investment in AI",
-        description: "AI is changing the world, click here to learn more. This is a wider card with supporting text below as a natural lead-in to additional content.",
-        buttonText: "Read More",
-    },
-    {
-        title: "New Movie Release in 2021! are you ready?",
-        description: "Hello Guyss The new movie is coming soon. Are you ready to watch it?",
-        buttonText: "Watch Now",
-    }
-]
+let plans = [
+  {
+    title: "Free Plan",
+    description:
+      "Perfect for individuals just starting out. Manage tasks with basic features.",
+    price: "$0/month",
+    buttonText: "Get Started",
+  },
+  {
+    title: "Pro Plan",
+    description:
+      "For small teams who want collaboration, reminders, and unlimited projects.",
+    price: "$9/month",
+    buttonText: "Upgrade",
+  },
+  {
+    title: "Enterprise",
+    description:
+      "Advanced features with team management, analytics, and priority support.",
+    price: "$29/month",
+    buttonText: "Contact Sales",
+  },
+];
+
 function SubscripTtion() {
-    return (
-        <div className="flex justify-center gap-10 py-10">
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-gray-800 via-gray-900 to-black px-6 py-12">
+      {/* Header */}
+      <div className="mb-12 text-center">
+        <h1 className="text-4xl font-extrabold text-white mb-3">
+          Choose Your Plan
+        </h1>
+        <p className="text-lg text-gray-400">
+          Unlock productivity with the right plan for your team
+        </p>
+      </div>
 
-            {
-                data.map((item, id) =>
-                    <div key={id} className="flex flex-col justify-center items-center gap-5 bg-gray-500 p-5 rounded-lg shadow-md">
-                        <Card title={item.title} description={item.description} />
-                        <Button text={item.buttonText} />
-                    </div>)
-            }
-        </div>
-    )
+      {/* Plans Grid */}
+      <div className="grid gap-8 md:grid-cols-3 max-w-6xl w-full">
+        {plans.map((plan, id) => (
+          <div
+            key={id}
+            className="flex flex-col justify-between items-center bg-gray-800 text-white rounded-2xl shadow-lg p-8 transform transition duration-300 hover:-translate-y-2 hover:shadow-2xl"
+          >
+            <Card title={plan.title} description={plan.description} />
+            
+            {/* Price */}
+            <p className="text-2xl font-bold mt-6">{plan.price}</p>
+            
+            {/* Button */}
+            <div className="mt-6 w-full">
+              <Button text={plan.buttonText} />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
-export default SubscripTtion
+
+export default SubscripTtion;

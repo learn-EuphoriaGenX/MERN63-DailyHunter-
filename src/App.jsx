@@ -5,19 +5,30 @@ import Register from './pages/Register'
 import Navbar from './components/Navbar'
 import SIdebar from './components/SIdebar'
 
+import { Routes, Route } from 'react-router-dom'
+import Dashboard from './pages/Dashboard'
+import AddTask from './pages/AddTask'
+import ResolvedTask from './pages/ResolvedTask'
+import Settings from './pages/Settings'
+
 function App() {
   return (
     <>
-
       <Navbar />
       <SIdebar />
-      <div class="p-4 sm:ml-64">
-        <div class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">
-          <SubscripTtion />
+      <div className="sm:ml-64">
+        <div className="">
+          <Routes>
+            <Route path='/dashboard' element={<Dashboard />} />
+            <Route path='/subscription' element={<SubscripTtion />} />
+            <Route path='/add-task' element={<AddTask />} />
+            <Route path='/resolved-task' element={<ResolvedTask />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/settings" element={<Settings />} />
+          </Routes>
         </div>
       </div>
-
-
 
 
 

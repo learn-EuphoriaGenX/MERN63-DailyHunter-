@@ -1,0 +1,19 @@
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;              /* width of vertical scrollbar */
+  height: 8px;             /* height of horizontal scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: #1f2937;      /* dark gray track */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #071630;      /* blue thumb */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #071431;      /* darker blue on hover */
+}
