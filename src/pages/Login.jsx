@@ -1,7 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 function Login() {
+    let [email, setEmail] = useState("");
+    let [password, setPassword] = useState("");
+
+    let handleSubmit = () => {
+        if (!email || !password) {
+            console.log("Please fill in all fields", email, password);
+
+            toast.error("Please fill in all fields", {
+                position: "top-right", backgroundColor: "red", theme: "colored"
+            });
+            return;
+        }
+        console.log({ email, password });
+    }
+
     return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-800 via-gray-900 to-black">
             <div className="bg-white dark:bg-gray-800 shadow-2xl rounded-2xl p-8 w-full max-w-md">
@@ -14,8 +30,8 @@ function Login() {
                     Fill in the details to login
                 </p>
 
-                {/* Form */}
-                <form className="space-y-5">
+                {/* div */}
+                <div className="space-y-5">
                     {/* Email */}
                     <div>
                         <label
@@ -25,11 +41,13 @@ function Login() {
                             Email Address
                         </label>
                         <input
+                            value={email}
+                            onChange={(event) => setEmail(event.target.value)}
                             type="email"
+                            name="email"
                             id="email"
                             placeholder="name@example.com"
                             className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50 dark:bg-gray-700 dark:text-white"
-                            required
                         />
                     </div>
 
@@ -37,28 +55,32 @@ function Login() {
                     <div>
                         <label
                             htmlFor="password"
+                            name="password"
                             className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300"
                         >
                             Password
                         </label>
                         <input
+                            onChange={(event) => setPassword(event.target.value)}
+                            value={password}
                             type="password"
                             id="password"
                             placeholder="••••••••"
                             className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50 dark:bg-gray-700 dark:text-white"
-                            required
+
                         />
                     </div>
 
 
                     {/* Button */}
                     <button
+                        onClick={handleSubmit}
                         type="submit"
                         className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 rounded-lg transition duration-200 shadow-md"
                     >
                         Log In
                     </button>
-                </form>
+                </div>
 
                 {/* Footer */}
                 <p className="text-sm text-gray-600 dark:text-gray-400 text-center mt-6">

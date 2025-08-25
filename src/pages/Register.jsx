@@ -1,11 +1,27 @@
 import React from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 function Register() {
+  let [email, setEmail] = useState("");
+  let [password, setPassword] = useState("");
+  let [confirmPassword, setConfirmPassword] = useState("");
+
+  let handleSubmit = () => {
+    if (!email || !password || !confirmPassword) {
+      toast.error("Please fill in all fields", {
+        position: "top-right", backgroundColor: "red", theme: "colored"
+      });
+      return;
+    }
+    console.log({ email, password, confirmPassword });
+  }
+
   return (
     <div className="min-h-screen pt-13 flex items-center justify-center bg-gradient-to-br from-gray-800 via-gray-900 to-black">
       <div className="bg-white dark:bg-gray-800 shadow-2xl rounded-2xl p-8 w-full max-w-md">
-        
+
         {/* Title */}
         <h1 className="text-2xl font-bold text-center text-gray-900 dark:text-white">
           Create Account
@@ -14,8 +30,8 @@ function Register() {
           Fill in the details to register
         </p>
 
-        {/* Form */}
-        <form className="space-y-5">
+        {/* div */}
+        <div className="space-y-5">
           {/* Email */}
           <div>
             <label
@@ -25,11 +41,14 @@ function Register() {
               Email Address
             </label>
             <input
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              name="email"
               type="email"
               id="email"
               placeholder="name@example.com"
               className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50 dark:bg-gray-700 dark:text-white"
-              required
+
             />
           </div>
 
@@ -42,11 +61,14 @@ function Register() {
               Password
             </label>
             <input
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              name="password"
               type="password"
               id="password"
               placeholder="••••••••"
               className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50 dark:bg-gray-700 dark:text-white"
-              required
+
             />
           </div>
 
@@ -59,11 +81,14 @@ function Register() {
               Confirm Password
             </label>
             <input
+              value={confirmPassword}
+              onChange={(event) => setConfirmPassword(event.target.value)}
+              name="confirmPassword"
               type="password"
               id="repeat-password"
               placeholder="••••••••"
               className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50 dark:bg-gray-700 dark:text-white"
-              required
+
             />
           </div>
 
@@ -73,7 +98,7 @@ function Register() {
               id="terms"
               type="checkbox"
               className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-              required
+
             />
             <label
               htmlFor="terms"
@@ -91,12 +116,12 @@ function Register() {
 
           {/* Button */}
           <button
-            type="submit"
+            onClick={handleSubmit}
             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 rounded-lg transition duration-200 shadow-md"
           >
             Register
           </button>
-        </form>
+        </div>
 
         {/* Footer */}
         <p className="text-sm text-gray-600 dark:text-gray-400 text-center mt-6">
