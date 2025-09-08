@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import Card from "../components/Card";
 
@@ -25,7 +26,12 @@ let plans = [
   },
 ];
 
-function SubscripTtion() {
+function SubscripTtion({ user, setuser }) {
+  const navigate = useNavigate()
+
+  if (Object.keys(user).length <= 0) {
+    return navigate('/login')
+  }
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-gray-800 via-gray-900 to-black px-6 py-12">
       {/* Header */}
@@ -46,10 +52,10 @@ function SubscripTtion() {
             className="flex flex-col justify-between items-center bg-gray-800 text-white rounded-2xl shadow-lg p-8 transform transition duration-300 hover:-translate-y-2 hover:shadow-2xl"
           >
             <Card title={plan.title} description={plan.description} />
-            
+
             {/* Price */}
             <p className="text-2xl font-bold mt-6">{plan.price}</p>
-            
+
             {/* Button */}
             <div className="mt-6 w-full">
               <Button text={plan.buttonText} />

@@ -1,7 +1,7 @@
 import React from "react";
 import StatCard from "../components/StatCard";
 import TaskCard from "../components/TaskCard";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 // Mock data
 const tasks = [
    {
@@ -149,7 +149,14 @@ const Header = () => (
 );
 
 // Main Dashboard Component
-const Dashboard = () => {
+const Dashboard = ({ user, setUser }) => {
+   const navigate = useNavigate()
+
+   if (Object.keys(user).length <= 0) {
+      return navigate('/login')
+   }
+
+
    return (
       <div className="text-gray-200 min-h-screen flex flex-col items-center pt-20 bg-gradient-to-br from-gray-800 via-gray-900 to-black px-6 py-12">
          <div className="container mx-auto px-4 py-8">

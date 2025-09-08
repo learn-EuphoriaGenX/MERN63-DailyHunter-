@@ -1,21 +1,37 @@
 import React from "react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import axios from 'axios'
+import BACKENDURL from "../config/backend";
 
-function Register() {
+function Register({ user, setUser }) {
   let [email, setEmail] = useState("");
   let [password, setPassword] = useState("");
-  let [confirmPassword, setConfirmPassword] = useState("");
+  let [name, setName] = useState("");
 
-  let handleSubmit = () => {
-    if (!email || !password || !confirmPassword) {
+  const navigate = useNavigate()
+
+  let handleSubmit = async () => {
+    if (!email || !password || !name) {
       toast.error("Please fill in all fields", {
         position: "top-right", backgroundColor: "red", theme: "colored"
       });
       return;
     }
-    console.log({ email, password, confirmPassword });
+    try {
+      let response = await axios.post(`${BACKENDURL}/api/users/register`, { name, email, password })
+      if (response.data.success) {
+        toast.success(response.data.message, { position: "top-right", backgroundColor: "green", theme: "colored" })
+        navigate("/login")
+      }
+    } catch (error) {
+      toast.error(error.response.data.message, { position: "top-right", backgroundColor: "red", theme: "colored" })
+    }
+  }
+
+  if (Object.keys(user).length > 0) {
+    return navigate('/dashboard')
   }
 
   return (
@@ -32,6 +48,25 @@ function Register() {
 
         {/* div */}
         <div className="space-y-5">
+          {/* EmaNameil */}
+          <div>
+            <label
+              htmlFor="name"
+              className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
+              Name
+            </label>
+            <input
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+              name="name"
+              type="text"
+              id="name"
+              placeholder="John Doe"
+              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50 dark:bg-gray-700 dark:text-white"
+
+            />
+          </div>
           {/* Email */}
           <div>
             <label
@@ -72,25 +107,7 @@ function Register() {
             />
           </div>
 
-          {/* Repeat Password */}
-          <div>
-            <label
-              htmlFor="repeat-password"
-              className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300"
-            >
-              Confirm Password
-            </label>
-            <input
-              value={confirmPassword}
-              onChange={(event) => setConfirmPassword(event.target.value)}
-              name="confirmPassword"
-              type="password"
-              id="repeat-password"
-              placeholder="••••••••"
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50 dark:bg-gray-700 dark:text-white"
 
-            />
-          </div>
 
           {/* Terms */}
           <div className="flex items-center">

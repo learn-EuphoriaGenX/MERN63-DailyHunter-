@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-function HomePage() {
+function HomePage({ user, setUser }) {
   return (
     <>
       <div class="min-h-screen flex flex-col items-center pt-20 sm:p-0 bg-gradient-to-br from-gray-800 via-gray-900 to-black px-6 py-12 justify-center gap-6">
@@ -12,16 +12,21 @@ function HomePage() {
           Your daily source for trending news, deals, and opportunities
         </p>
         <div class="flex flex-col mx-auto sm:flex-row gap-4">
-          <Link to="/dashboard">
-            <button class="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 px-8 rounded-lg transition duration-300">
-              Dashbord
-            </button>
-          </Link>
-          <Link to="/login">
-            <button class="border border-gray-600 hover:border-orange-500 text-white font-semibold py-3 px-8 rounded-lg transition duration-300">
-              Login
-            </button>
-          </Link>
+
+          {
+            Object.keys(user).length <= 0 ?
+              <Link to="/login">
+                <button class="border border-gray-600 hover:border-orange-500 text-white font-semibold py-3 px-8 rounded-lg transition duration-300">
+                  Login
+                </button>
+              </Link> :
+              <Link to="/dashboard">
+                <button class="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 px-8 rounded-lg transition duration-300">
+                  Dashbord
+                </button>
+              </Link>
+
+          }
         </div>
       </div>
     </>

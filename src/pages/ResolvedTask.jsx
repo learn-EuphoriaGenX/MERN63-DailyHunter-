@@ -1,5 +1,6 @@
 import React from 'react'
 import Button from "../components/Button";
+import { useNavigate } from 'react-router-dom';
 
 let headers = ["ID", "Task Name", "Task Priority", "Added", "Time", "Status"];
 
@@ -54,7 +55,12 @@ const tasks = [
     },
 ];
 
-function ResolvedTask() {
+function ResolvedTask({ user, setUser }) {
+    const navigate = useNavigate()
+
+    if (Object.keys(user).length <= 0) {
+        return navigate('/login')
+    }
     return (
         <div className="min-h-screen flex flex-col items-center pt-20 bg-gradient-to-br from-gray-800 via-gray-900 to-black px-6 py-12">
             {/* Header */}
@@ -98,7 +104,7 @@ function ResolvedTask() {
                                         <td className="px-6 py-4">{item.added}</td>
                                         <td className="px-6 py-4">{item.Time}</td>
                                         <td className="px-6 py-4">{item.Status}</td>
-                                       
+
                                     </tr>
                                 ))
                             ) : (

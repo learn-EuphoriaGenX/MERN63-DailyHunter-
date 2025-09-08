@@ -1,12 +1,16 @@
+import axios from "axios";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import BACKENDURL from "../config/backend";
 
-function Login() {
+function Login({ user, setUser }) {
     let [email, setEmail] = useState("");
     let [password, setPassword] = useState("");
+    const navigate = useNavigate()
 
-    let handleSubmit = () => {
+
+    let handleSubmit = async () => {
         if (!email || !password) {
             console.log("Please fill in all fields", email, password);
 
@@ -15,7 +19,23 @@ function Login() {
             });
             return;
         }
-        console.log({ email, password });
+
+        try {
+            let response = await axios.post(`${BACKENDURL}/api/users/login`, { email, password })
+            if (response.data.success) {
+                setUser(response.data.data)
+                localStorage.setItem('token', response.data.token)
+                toast.success(response.data.message, { position: "top-right", backgroundColor: "green", theme: "colored" })
+                navigate("/dashboard")
+            }
+        } catch (error) {
+            toast.error(error.response?.data?.message, { position: "top-right", backgroundColor: "red", theme: "colored" })
+        }
+
+    }
+
+    if (Object.keys(user).length > 0) {
+        return navigate('/dashboard')
     }
 
     return (

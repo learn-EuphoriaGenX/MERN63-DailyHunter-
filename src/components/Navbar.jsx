@@ -1,10 +1,8 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-function Navbar() {
+function Navbar({ user, setUser }) {
     return (
-
-
         <nav className="fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
             <div className="px-3 py-3 lg:px-5 lg:pl-3">
                 <div className="flex items-center justify-between">
@@ -20,15 +18,19 @@ function Navbar() {
                             <span className="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">Daily Hunter</span>
                         </Link>
                     </div>
-                    <div className="flex items-center">
-                        <div className="flex items-center ms-3">
-                            <Link to={"/settings"}>
-                                <button type="button" className="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600" aria-expanded="false" data-dropdown-toggle="dropdown-user">
-                                    <img className="w-8 h-8 rounded-full" src="https://flowbite.com/docs/images/people/profile-picture-5.jpg" alt="user photo" />
-                                </button>
-                            </Link>
+                    {
+                        Object.keys(user).length > 0 && <div className="flex items-center">
+                            <div className="flex items-center ms-3">
+                                <Link to={"/settings"}>
+                                    <button type="button" className="flex items-center gap-2 text-sm bg-gray-800 rounded-full focus:ring-4  focus:ring-gray-300 dark:focus:ring-gray-600" aria-expanded="false" data-dropdown-toggle="dropdown-user">
+                                        <img className="w-8 h-8 rounded-full" src="https://flowbite.com/docs/images/people/profile-picture-5.jpg" alt="user photo" />
+                                        <span className="text-white">{user.name}</span>
+                                    </button>
+                                </Link>
+                            </div>
                         </div>
-                    </div>
+                    }
+
                 </div>
             </div>
         </nav>
