@@ -1,3 +1,3 @@
-const BACKENDURL = 'http://localhost:3000'
+const BACKENDURL = 'https://dailihunter.onrender.com'
 
 export default BACKENDURL

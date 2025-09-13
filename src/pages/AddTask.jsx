@@ -1,68 +1,81 @@
 import React from "react";
 import Button from "../components/Button";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { toast } from "react-toastify";
+import BACKENDURL from "../config/backend";
+import { useEffect } from "react";
+import axios from "axios";
 
 let headers = ["ID", "Task Name", "Task Priority", "Added", "Time", "Status", "Action"];
 
-const tasks = [
-  {
-    ID: 1,
-    "Task Name": "Design Dashboard UI",
-    "Task Priority": "High",
-    added: "1:00 PM",
-    Time: "2h",
-    Status: "In Progress",
-    Action: "Resolved",
-  },
-  {
-    ID: 2,
-    "Task Name": "Fix Login Bug",
-    "Task Priority": "Critical",
-    added: "2:00 PM",
-    Time: "1h",
-    Status: "Pending",
-    Action: "In Progress",
-  },
-  {
-    ID: 3,
-    "Task Name": "Write API Documentation",
-    "Task Priority": "Medium",
-    added: "5:00 PM",
-    Time: "3h",
-    Status: "Completed",
-    Action: "None",
-  },
-  {
-    ID: 4,
-    "Task Name": "Database Backup",
-    "Task Priority": "Low",
-    added: "7:00 PM",
-    Time: "30m",
-    Status: "Completed",
-    Action: "None",
-  },
-  {
-    ID: 5,
-    "Task Name": "Setup CI/CD Pipeline",
-    "Task Priority": "High",
-    added: "9:00 PM",
-    Time: "4h",
-    Status: "In Progress",
-    Action: "Resolved",
-  },
-  {
-    ID: 6,
-    "Task Name": "Optimize Images",
-    "Task Priority": "Low",
-    added: "1:00 PM",
-    Time: "45m",
-    Status: "Completed",
-    Action: "None",
-  },
-];
+
 
 function AddTask({ user, setUser }) {
   const navigate = useNavigate()
+  let [tasks, setTasks] = useState([])
+
+  let emptyTask = {
+    title: "",
+    time: "",
+    priority: ""
+  }
+
+  let [newTask, setNewTask] = useState(emptyTask)
+
+  // http://localhost:3000/api/task/add
+
+  // http://localhost:3000/api/task/view
+
+  let retriveAllTasks = async () => {
+
+    try {
+      let token = localStorage.getItem('token')
+      let response = await axios.get(`${BACKENDURL}/api/task/view`, {
+        headers: {
+          Authorization: token,
+        },
+      })
+      setTasks(response.data.data);
+
+
+    } catch (error) {
+      toast.error("Failed to fetch Tasks")
+
+    }
+  }
+
+
+
+  let handleClickAddTask = async () => {
+    if (!newTask.title || !newTask.time || !newTask.priority) {
+      console.log("Hello");
+
+      toast.error('Please fill all the Fields!')
+      return
+    } else {
+      try {
+        let token = localStorage.getItem('token')
+        let response = await axios.post(`${BACKENDURL}/api/task/add`, newTask, {
+          headers: {
+            Authorization: token,
+          },
+        })
+        retriveAllTasks();
+        toast.success("Task Added Successfully!")
+      } catch (error) {
+        toast.error("Failed to fetch Tasks")
+
+      }
+
+    }
+  }
+
+  useEffect(() => {
+    retriveAllTasks()
+  }, [])
+
+
 
   if (Object.keys(user).length <= 0) {
     return navigate('/login')
@@ -86,17 +99,62 @@ function AddTask({ user, setUser }) {
             htmlFor="task"
             className="block mb-1 text-sm font-medium text-gray-200"
           >
-            Task Name
+            Task Title
           </label>
           <input
             type="text"
             id="task"
+            name="title"
+            value={newTask.title}
+            onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
             placeholder="Coding"
             className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50 dark:bg-gray-700 dark:text-white"
             required
           />
         </div>
-        <Button text="Add Task" />
+        <div>
+          <label
+            htmlFor="task"
+            className="block mb-1 text-sm font-medium text-gray-200"
+          >
+            Task Time
+          </label>
+          <input
+            type="text"
+            id="task"
+            name="time"
+            value={newTask.time}
+            onChange={(e) => setNewTask({ ...newTask, time: e.target.value })}
+            placeholder="4h"
+            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50 dark:bg-gray-700 dark:text-white"
+            required
+          />
+        </div>
+
+        <div>
+          <label
+            htmlFor="priority"
+            className="block mb-1 text-sm font-medium text-gray-200"
+          >
+            Task Priority
+          </label>
+          <select
+            id="priority"
+            name="priority"
+            value={newTask.priority}
+            onChange={(e) => setNewTask({ ...newTask, priority: e.target.value })}
+            className="w-[110%] px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50 dark:bg-gray-700 dark:text-white"
+            required
+          >
+            <option value="">Select priority</option>
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+            <option value="Critical">Critical</option>
+          </select>
+        </div>
+
+        <Button handleClick={handleClickAddTask} text="Add Task" design={"ml-5"} />
       </div>
 
       {/* Scrollable Table */}
@@ -123,19 +181,19 @@ function AddTask({ user, setUser }) {
                       scope="row"
                       className="px-6 py-4 font-medium text-white whitespace-nowrap"
                     >
-                      {item.ID}
+                      {index+1}
                     </th>
-                    <td className="px-6 py-4">{item["Task Name"]}</td>
-                    <td className="px-6 py-4">{item["Task Priority"]}</td>
-                    <td className="px-6 py-4">{item.added}</td>
-                    <td className="px-6 py-4">{item.Time}</td>
-                    <td className="px-6 py-4">{item.Status}</td>
+                    <td className="px-6 py-4">{item.title}</td>
+                    <td className="px-6 py-4">{item.priority}</td>
+                    <td className="px-6 py-4">{item.createdAt}</td>
+                    <td className="px-6 py-4">{item.time}</td>
+                    <td className="px-6 py-4">{item.status}</td>
                     <td className="px-6 py-4">
                       <a
                         href="#"
                         className="font-medium text-blue-400 hover:underline"
                       >
-                        {item.Action}
+                        {item.status == 'Pending' ? 'Mark As In Progress' : 'Mark As Completed'}
                       </a>
                     </td>
                   </tr>
