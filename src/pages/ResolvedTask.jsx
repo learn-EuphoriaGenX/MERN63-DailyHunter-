@@ -1,62 +1,39 @@
 import React from 'react'
 import Button from "../components/Button";
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import { useState } from 'react';
+import { useEffect } from 'react';
+import BACKENDURL from '../config/backend';
 
 let headers = ["ID", "Task Name", "Task Priority", "Added", "Time", "Status"];
 
-const tasks = [
-    {
-        ID: 1,
-        "Task Name": "Design Dashboard UI",
-        "Task Priority": "High",
-        added: "1:00 PM",
-        Time: "2h",
-        Status: "Resolved"
-    },
-    {
-        ID: 2,
-        "Task Name": "Fix Login Bug",
-        "Task Priority": "Critical",
-        added: "2:00 PM",
-        Time: "1h",
-        Status: "Resolved"
-    },
-    {
-        ID: 3,
-        "Task Name": "Write API Documentation",
-        "Task Priority": "Medium",
-        added: "5:00 PM",
-        Time: "3h",
-        Status: "Resolved"
-    },
-    {
-        ID: 4,
-        "Task Name": "Database Backup",
-        "Task Priority": "Low",
-        added: "7:00 PM",
-        Time: "30m",
-        Status: "Resolved"
-    },
-    {
-        ID: 5,
-        "Task Name": "Setup CI/CD Pipeline",
-        "Task Priority": "High",
-        added: "9:00 PM",
-        Time: "4h",
-        Status: "Resolved"
-    },
-    {
-        ID: 6,
-        "Task Name": "Optimize Images",
-        "Task Priority": "Low",
-        added: "1:00 PM",
-        Time: "45m",
-        Status: "Resolved"
-    },
-];
 
 function ResolvedTask({ user, setUser }) {
     const navigate = useNavigate()
+    let [tasks, setTasks] = useState([])
+
+    let retriveAllTasks = async () => {
+        try {
+            let token = localStorage.getItem('token')
+            let response = await axios.get(`${BACKENDURL}/api/task/view?status=Completed`, {
+                headers: {
+                    Authorization: token,
+                },
+            })
+            console.log(response.data.data);
+            
+            setTasks(response.data.data);
+        } catch (error) {
+            toast.error("Failed to fetch Tasks")
+        }
+    }
+
+    useEffect(() => {
+        retriveAllTasks()
+    }, [])
+
 
     if (Object.keys(user).length <= 0) {
         return navigate('/login')
@@ -97,13 +74,13 @@ function ResolvedTask({ user, setUser }) {
                                             scope="row"
                                             className="px-6 py-4 font-medium text-white whitespace-nowrap"
                                         >
-                                            {item.ID}
+                                            {index+1}
                                         </th>
-                                        <td className="px-6 py-4">{item["Task Name"]}</td>
-                                        <td className="px-6 py-4">{item["Task Priority"]}</td>
-                                        <td className="px-6 py-4">{item.added}</td>
-                                        <td className="px-6 py-4">{item.Time}</td>
-                                        <td className="px-6 py-4">{item.Status}</td>
+                                        <td className="px-6 py-4">{item.title}</td>
+                                        <td className="px-6 py-4">{item.priority}</td>
+                                        <td className="px-6 py-4">{item.createdAt}</td>
+                    <td className="px-6 py-4">{item.time}</td>
+                    <td className={`px-6 py-4 ${item.status == "Pending" ? 'text-red-600' : item.status == "In Progress" ? 'text-amber-300' : 'text-green-500'}`}>{item.status}</td>
 
                                     </tr>
                                 ))

@@ -2,111 +2,16 @@ import React from "react";
 import StatCard from "../components/StatCard";
 import TaskCard from "../components/TaskCard";
 import { Link, useNavigate } from "react-router-dom";
-// Mock data
-const tasks = [
-   {
-      id: 1,
-      name: "Design Dashboard UI",
-      priority: "High",
-      added: "1:00 PM",
-      time: "2h",
-      status: "In Progress",
-      action: "Resolved",
-   },
-   {
-      id: 2,
-      name: "Fix Login Bug",
-      priority: "Critical",
-      added: "2:00 PM",
-      time: "1h",
-      status: "Pending",
-      action: "In Progress",
-   },
-   {
-      id: 3,
-      name: "Write API Documentation",
-      priority: "Medium",
-      added: "5:00 PM",
-      time: "3h",
-      status: "Completed",
-      action: "None",
-   },
-   {
-      id: 4,
-      name: "Database Backup",
-      priority: "Low",
-      added: "7:00 PM",
-      time: "30m",
-      status: "Completed",
-      action: "None",
-   },
-   {
-      id: 5,
-      name: "Setup CI/CD Pipeline",
-      priority: "High",
-      added: "9:00 PM",
-      time: "4h",
-      status: "In Progress",
-      action: "Resolved",
-   },
-   {
-      id: 6,
-      name: "Optimize Images",
-      priority: "Low",
-      added: "1:00 PM",
-      time: "45m",
-      status: "Completed",
-      action: "None",
-   },
-   {
-      id: 7,
-      name: "Online Class",
-      priority: "Medium",
-      added: "3:00 PM",
-      time: "2h",
-      status: "Pending",
-      action: "None",
-   },
-   {
-      id: 8,
-      name: "PPT Submission",
-      priority: "High",
-      added: "6:00 PM",
-      time: "10m",
-      status: "In Progress",
-      action: "None",
-   },
-   {
-      id: 9,
-      name: "Assignment",
-      priority: "Low",
-      added: "8:00 AM",
-      time: "1h",
-      status: "Completed",
-      action: "None",
-   },
-   {
-      id: 10,
-      name: "Interview",
-      priority: "Critical",
-      added: "1:00 PM",
-      time: "45m",
-      status: "Pending",
-      action: "None",
-   },
-];
+import { useEffect } from "react";
+import { useState } from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
+import BACKENDURL from "../config/backend";
 
-
-
-// Reusable Components
-
-
-
-
-const TaskGrid = ({ tasks }) => (
+const TaskGrid = ({ tasks, retriveAllTasks }) => (
    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
       {tasks.map((task) => (
-         <TaskCard key={task.id} task={task} />
+         <TaskCard key={task.id} task={task} retriveAllTasks={retriveAllTasks} />
       ))}
    </div>
 );
@@ -152,9 +57,33 @@ const Header = () => (
 const Dashboard = ({ user, setUser }) => {
    const navigate = useNavigate()
 
-   if (Object.keys(user).length <= 0) {
-      return navigate('/login')
+   useEffect(() => {
+      if (!user || Object.keys(user).length === 0) {
+         navigate("/login");
+      }
+   }, [user, navigate]);
+
+   let [tasks, setTasks] = useState([])
+
+   let retriveAllTasks = async () => {
+      try {
+         let token = localStorage.getItem('token')
+         let response = await axios.get(`${BACKENDURL}/api/task/view`, {
+            headers: {
+               Authorization: token,
+            },
+         })
+         setTasks(response.data.data);
+      } catch (error) {
+         toast.error("Failed to fetch Tasks")
+      }
    }
+
+   useEffect(() => {
+      retriveAllTasks()
+   }, [])
+
+
 
 
    return (
@@ -165,7 +94,7 @@ const Dashboard = ({ user, setUser }) => {
 
                <div className="bg-gray-800 rounded-xl p-6">
                   <Header />
-                  <TaskGrid tasks={tasks} />
+                  <TaskGrid tasks={tasks} retriveAllTasks={retriveAllTasks} />
                </div>
             </main>
          </div>

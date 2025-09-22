@@ -28,7 +28,6 @@ function AddTask({ user, setUser }) {
   // http://localhost:3000/api/task/view
 
   let retriveAllTasks = async () => {
-
     try {
       let token = localStorage.getItem('token')
       let response = await axios.get(`${BACKENDURL}/api/task/view`, {
@@ -37,11 +36,27 @@ function AddTask({ user, setUser }) {
         },
       })
       setTasks(response.data.data);
-
-
     } catch (error) {
       toast.error("Failed to fetch Tasks")
+    }
+  }
 
+  let handleUpdate = async (id, status) => {
+    try {
+      let token = localStorage.getItem('token')
+      console.log(token);
+
+      let response = await axios.put(`${BACKENDURL}/api/task/update/${id}/${status}`, {}, {
+        headers: {
+          Authorization: token,
+        },
+      })
+      toast.success("Task Updated Successfully!")
+      retriveAllTasks()
+    } catch (error) {
+      console.log(error);
+
+      toast.error(error.response?.data?.message)
     }
   }
 
@@ -181,20 +196,34 @@ function AddTask({ user, setUser }) {
                       scope="row"
                       className="px-6 py-4 font-medium text-white whitespace-nowrap"
                     >
-                      {index+1}
+                      {index + 1}
                     </th>
                     <td className="px-6 py-4">{item.title}</td>
                     <td className="px-6 py-4">{item.priority}</td>
                     <td className="px-6 py-4">{item.createdAt}</td>
                     <td className="px-6 py-4">{item.time}</td>
-                    <td className="px-6 py-4">{item.status}</td>
+                    <td className={`px-6 py-4 ${item.status == "Pending" ? 'text-red-600' : item.status == "In Progress" ? 'text-amber-300' : 'text-green-500'}`}>{item.status}</td>
                     <td className="px-6 py-4">
-                      <a
-                        href="#"
-                        className="font-medium text-blue-400 hover:underline"
-                      >
-                        {item.status == 'Pending' ? 'Mark As In Progress' : 'Mark As Completed'}
-                      </a>
+                      {
+                        item.status == 'Pending' ? <button
+                          className="font-medium text-blue-400 hover:underline"
+                          onClick={() => handleUpdate(item._id, 'In Progress')}
+                        >
+                          Mark As In Progress
+                        </button> :
+                          item.status == "In Progress" ?
+                            <button
+                              onClick={() => handleUpdate(item._id, 'Completed')}
+                              className="font-medium text-blue-400 hover:underline"
+                            >
+                              Mark As Completed
+                            </button> :
+                            <button
+                              className="font-medium text-blue-400 hover:underline"
+                            >
+                              Completed
+                            </button>
+                      }
                     </td>
                   </tr>
                 ))
